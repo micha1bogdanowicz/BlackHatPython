@@ -129,5 +129,29 @@ def run_command(command):
         output = "Polecenie nie zostalo zrealizowane\r\n"
     return output
 
+def client_handler(client_socket):
+    global upload
+    global execute
+    global command
+
+    if len(upload_destination):
+        file_buffer = ""
+        #pobranie danych
+        while True:
+            data = client_socket.recv(1024)
+            if not data:
+                break
+            else:
+                file_buffer+=data
+        #proba zapisu
+        try:
+            file_desriptor = open(upload_destination,"wb")
+            file_desriptor.write(file_buffer)
+            file_desriptor.close()
+            client_socket.send("Zapisano plik w %s \r\n" % upload_destination)
+        except:
+            client_socket.send("Nie udało sie zapisać pliku w %s\r\n" % upload_destination)
+
+
 if __name__=="__main__":
     main()
