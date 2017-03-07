@@ -152,6 +152,19 @@ def client_handler(client_socket):
         except:
             client_socket.send("Nie udało sie zapisać pliku w %s\r\n" % upload_destination)
 
+    if len(execute):
+        output=run_command(execute)
+        client_socket.send(output)
+
+    if command:
+        while True:
+            client_socket.send("BHPnetcat:#>>> ")
+            cmd_buffer=""
+            while "\n" not in cmd_buffer:
+                cmd_buffer+=client_socket.recv(1024)
+            response=run_command(cmd_buffer)
+            client_socket.send(response)
+
 
 if __name__=="__main__":
     main()
